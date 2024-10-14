@@ -61,6 +61,7 @@ const FixtureScreen = () => {
         homeGoal: Number(homeScore),
         awayGoal: Number(awayScore),
         isCompleted: true,
+        date: new Date().toISOString(),
       };
       setFixtures(updatedFixtures);
     }
