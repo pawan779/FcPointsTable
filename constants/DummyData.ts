@@ -133,3 +133,125 @@ export const pointsTable: PointsTable[] = [
     points: 8,
   },
 ];
+
+export type Fixture = {
+  id: number;
+  homeTeam: string;
+  awayTeam: string;
+  date: string;
+};
+
+export const fixtures: Fixture[] = [
+  {
+    id: 1,
+    homeTeam: "Manchester United",
+    awayTeam: "Chelsea",
+    date: "2024-10-15",
+  },
+  {
+    id: 2,
+    homeTeam: "Liverpool",
+    awayTeam: "Arsenal",
+    date: "2024-10-16",
+  },
+  {
+    id: 3,
+    homeTeam: "Tottenham Hotspur",
+    awayTeam: "Manchester City",
+    date: "2024-10-17",
+  },
+  {
+    id: 4,
+    homeTeam: "Everton",
+    awayTeam: "Leicester City",
+    date: "2024-10-18",
+  },
+  {
+    id: 5,
+    homeTeam: "West Ham United",
+    awayTeam: "Aston Villa",
+    date: "2024-10-19",
+  },
+  {
+    id: 6,
+    homeTeam: "Wolves",
+    awayTeam: "Brighton",
+    date: "2024-10-20",
+  },
+  {
+    id: 7,
+    homeTeam: "Crystal Palace",
+    awayTeam: "Newcastle United",
+    date: "2024-10-21",
+  },
+  {
+    id: 8,
+    homeTeam: "Leeds United",
+    awayTeam: "Southampton",
+    date: "2024-10-22",
+  },
+  {
+    id: 9,
+    homeTeam: "Brentford",
+    awayTeam: "Norwich City",
+    date: "2024-10-23",
+  },
+  {
+    id: 10,
+    homeTeam: "Fulham",
+    awayTeam: "Burnley",
+    date: "2024-10-24",
+  },
+];
+
+export type Result = {
+  id: number;
+  homeTeam: string;
+  awayTeam: string;
+  homeScore: number;
+  awayScore: number;
+  date: string;
+};
+
+export const results: Result[] = [
+  {
+    id: 1,
+    homeTeam: "Manchester City",
+    awayTeam: "Liverpool",
+    homeScore: 2,
+    awayScore: 1,
+    date: "2024-10-01",
+  },
+  {
+    id: 2,
+    homeTeam: "Chelsea",
+    awayTeam: "Arsenal",
+    homeScore: 1,
+    awayScore: 3,
+    date: "2024-10-02",
+  },
+  {
+    id: 3,
+    homeTeam: "Tottenham Hotspur",
+    awayTeam: "Manchester United",
+    homeScore: 0,
+    awayScore: 0,
+    date: "2024-10-03",
+  },
+  {
+    id: 4,
+    homeTeam: "Leicester City",
+    awayTeam: "West Ham United",
+    homeScore: 4,
+    awayScore: 2,
+    date: "2024-10-04",
+  },
+  {
+    id: 5,
+    homeTeam: "Aston Villa",
+    awayTeam: "Everton",
+    homeScore: 3,
+    awayScore: 1,
+    date: "2024-10-05",
+  },
+];

@@ -1,18 +1,24 @@
-import { Image, StyleSheet, Platform } from "react-native";
+import { Image, StyleSheet, Platform, View } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import PointsTableTabs from "@/components/PointsTableTabs";
 
 export default function HomeScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#000", dark: "#141616" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/banner.jpg")}
-          style={styles.reactLogo}
-        />
-      }
-    ></ParallaxScrollView>
+    <View style={{ flex: 1, marginTop: 100 }}>
+      <PointsTableTabs />
+    </View>
+    // <ParallaxScrollView
+    //   headerBackgroundColor={{ light: "#000", dark: "#141616" }}
+    //   headerImage={
+    //     <Image
+    //       source={require("@/assets/images/banner.jpg")}
+    //       style={styles.reactLogo}
+    //     />
+    //   }
+    // >
+    //   <PointsTableTabs />
+    // </ParallaxScrollView>
   );
 }
 
