@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
+  Alert, // Import Alert
 } from "react-native";
 import { Fixture } from "@/constants/DummyData"; // Import the dummy data
 import { tintColorLight } from "@/constants/Colors";
@@ -72,6 +73,28 @@ const FixtureScreen = () => {
     setSelectedFixture(null);
   };
 
+  // Alert before navigating to create new fixture
+  const handleFloatingButtonPress = () => {
+    Alert.alert(
+      "Warning",
+      "By creating a new fixture, your old data will be deleted. Are you sure?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            setFixtures([]);
+            navigation.navigate("create");
+          },
+        },
+      ]
+    );
+  };
+
   console.log("fixture", fixtures);
 
   return (
@@ -135,7 +158,7 @@ const FixtureScreen = () => {
       {/* Floating Button */}
       <TouchableOpacity
         style={styles.floatingButton}
-        onPress={() => navigation.navigate("create")}
+        onPress={handleFloatingButtonPress} // Use the alert function here
       >
         <Text style={styles.floatingButtonText}>+</Text>
       </TouchableOpacity>

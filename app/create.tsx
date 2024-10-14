@@ -1,3 +1,4 @@
+import { tintColorLight } from "@/constants/Colors";
 import { Fixture } from "@/constants/DummyData";
 import { useFixtures } from "@/context/FixtureContext";
 import { useNavigation } from "expo-router";
@@ -123,82 +124,73 @@ const FixtureGeneratorScreen = () => {
       <Text style={styles.title}>Fixture Generator</Text>
 
       {/* Fixture Name Input */}
-      <Text>Enter Fixture Name:</Text>
+      {/* <Text>Enter Fixture Name:</Text>
       <TextInput
         style={styles.input}
         placeholder="Fixture Name"
         value={fixtureName}
         onChangeText={(text) => setFixtureName(text)}
-      />
+      /> */}
 
       {/* Block further inputs until fixture name is set */}
-      {fixtureName.length > 0 && (
-        <>
-          <Text>How many players?</Text>
+      {/* {fixtureName.length > 0 && ( */}
+      <View style={{ flex: 1 }}>
+        <Text style={styles.txt}>How many players?</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          placeholderTextColor={"#555555"}
+          placeholder="Number of Players"
+          onChangeText={(text) => {
+            setNumberOfPlayers(Number(text));
+            resetPlayer();
+          }}
+        />
+
+        {Array.from({ length: numberOfPlayers }).map((_, index) => (
           <TextInput
+            key={index}
+            placeholder={`Player ${index + 1} Name`}
             style={styles.input}
-            keyboardType="numeric"
-            onChangeText={(text) => {
-              setNumberOfPlayers(Number(text));
-              resetPlayer();
-            }}
+            onChangeText={(text) => handlePlayerNameChange(text, index)}
+            placeholderTextColor={"#555555"}
           />
+        ))}
 
-          {Array.from({ length: numberOfPlayers }).map((_, index) => (
-            <TextInput
-              key={index}
-              placeholder={`Player ${index + 1} Name`}
-              style={styles.input}
-              onChangeText={(text) => handlePlayerNameChange(text, index)}
-            />
-          ))}
-
-          <Text>How many matches per team?</Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[
-                styles.matchButton,
-                matchesPerTeam === 1 && styles.selectedButton,
-              ]}
-              onPress={() => setMatchesPerTeam(1)}
-            >
-              <Text style={styles.buttonText}>1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.matchButton,
-                matchesPerTeam === 2 && styles.selectedButton,
-              ]}
-              onPress={() => setMatchesPerTeam(2)}
-            >
-              <Text style={styles.buttonText}>2</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.matchButton,
-                matchesPerTeam === 3 && styles.selectedButton,
-              ]}
-              onPress={() => setMatchesPerTeam(3)}
-            >
-              <Text style={styles.buttonText}>3</Text>
-            </TouchableOpacity>
-          </View>
-
-          <Button title="Generate Fixtures" onPress={generateFixtures} />
-        </>
-      )}
-
-      <FlatList
-        data={fixtures}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.fixtureItem}>
-            <Text>
-              {item.homeTeam} vs {item.awayTeam}
-            </Text>
-          </View>
-        )}
-      />
+        <Text style={styles.txt}>How many matches per team?</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[
+              styles.matchButton,
+              matchesPerTeam === 1 && styles.selectedButton,
+            ]}
+            onPress={() => setMatchesPerTeam(1)}
+          >
+            <Text style={styles.buttonText}>1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.matchButton,
+              matchesPerTeam === 2 && styles.selectedButton,
+            ]}
+            onPress={() => setMatchesPerTeam(2)}
+          >
+            <Text style={styles.buttonText}>2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.matchButton,
+              matchesPerTeam === 3 && styles.selectedButton,
+            ]}
+            onPress={() => setMatchesPerTeam(3)}
+          >
+            <Text style={styles.buttonText}>3</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <TouchableOpacity style={styles.button} onPress={generateFixtures}>
+        <Text style={styles.buttonText1}>Generate Fixtures</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -208,6 +200,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#fff",
+  },
+  txt: {
+    fontSize: 15,
+    marginBottom: 5,
   },
   title: {
     fontSize: 24,
@@ -224,7 +220,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginBottom: 20,
+    marginVertical: 20,
   },
   matchButton: {
     padding: 10,
@@ -232,7 +228,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   selectedButton: {
-    backgroundColor: "#008CBA",
+    backgroundColor: tintColorLight,
   },
   buttonText: {
     color: "#000",
@@ -243,6 +239,19 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     backgroundColor: "#f9f9f9",
     borderRadius: 5,
+  },
+  button: {
+    backgroundColor: "#000", // Dark button color
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    marginBottom: 20,
+    alignItems: "center", // Centers the text
+  },
+  buttonText1: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
   },
 });
 
