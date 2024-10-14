@@ -20,6 +20,7 @@ export type Fixture = {
 };
 
 const FixtureGeneratorScreen = () => {
+  const [fixtureName, setFixtureName] = useState(""); // New state for fixture name
   const [numberOfPlayers, setNumberOfPlayers] = useState(0);
   const [playerNames, setPlayerNames] = useState<string[]>([]);
   const [matchesPerTeam, setMatchesPerTeam] = useState<number | null>(null);
@@ -45,7 +46,6 @@ const FixtureGeneratorScreen = () => {
     const newFixtures: Fixture[] = [];
     const teams = [...playerNames];
 
-    // Generate fixtures based on player count and matches per team
     if (matchesPerTeam === 1) {
       for (let i = 0; i < teams.length; i++) {
         for (let j = i + 1; j < teams.length; j++) {
@@ -61,7 +61,6 @@ const FixtureGeneratorScreen = () => {
         }
       }
     } else if (matchesPerTeam === 2) {
-      // Home and away fixtures for each match-up
       for (let i = 0; i < teams.length; i++) {
         for (let j = i + 1; j < teams.length; j++) {
           newFixtures.push({
@@ -83,7 +82,6 @@ const FixtureGeneratorScreen = () => {
         }
       }
     } else if (matchesPerTeam === 3) {
-      // Home, away, and a random fixture for each team
       for (let i = 0; i < teams.length; i++) {
         for (let j = i + 1; j < teams.length; j++) {
           newFixtures.push({
@@ -103,7 +101,6 @@ const FixtureGeneratorScreen = () => {
             isCompleted: false,
           });
 
-          // Random fixture with random home/away assignment
           const randomHomeFirst = Math.random() < 0.5;
           newFixtures.push({
             id: newFixtures.length + 1,
@@ -118,68 +115,84 @@ const FixtureGeneratorScreen = () => {
     }
 
     setFixtures(newFixtures);
+    console.log(newFixtures);
   };
 
-  const resetPLayer = () => {
+  const resetPlayer = () => {
     setPlayerNames([]);
     setMatchesPerTeam(null);
     setFixtures([]);
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Fixture Generator</Text>
 
-      <Text>How many players?</Text>
+      {/* Fixture Name Input */}
+      <Text>Enter Fixture Name:</Text>
       <TextInput
         style={styles.input}
-        keyboardType="numeric"
-        onChangeText={(text) => {
-          setNumberOfPlayers(Number(text));
-          resetPLayer();
-        }}
+        placeholder="Fixture Name"
+        value={fixtureName}
+        onChangeText={(text) => setFixtureName(text)}
       />
 
-      {Array.from({ length: numberOfPlayers }).map((_, index) => (
-        <TextInput
-          key={index}
-          placeholder={`Player ${index + 1} Name`}
-          style={styles.input}
-          onChangeText={(text) => handlePlayerNameChange(text, index)}
-        />
-      ))}
+      {/* Block further inputs until fixture name is set */}
+      {fixtureName.length > 0 && (
+        <>
+          <Text>How many players?</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            onChangeText={(text) => {
+              setNumberOfPlayers(Number(text));
+              resetPlayer();
+            }}
+          />
 
-      <Text>How many matches per team?</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.matchButton,
-            matchesPerTeam === 1 && styles.selectedButton,
-          ]}
-          onPress={() => setMatchesPerTeam(1)}
-        >
-          <Text style={styles.buttonText}>1</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.matchButton,
-            matchesPerTeam === 2 && styles.selectedButton,
-          ]}
-          onPress={() => setMatchesPerTeam(2)}
-        >
-          <Text style={styles.buttonText}>2</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.matchButton,
-            matchesPerTeam === 3 && styles.selectedButton,
-          ]}
-          onPress={() => setMatchesPerTeam(3)}
-        >
-          <Text style={styles.buttonText}>3</Text>
-        </TouchableOpacity>
-      </View>
+          {Array.from({ length: numberOfPlayers }).map((_, index) => (
+            <TextInput
+              key={index}
+              placeholder={`Player ${index + 1} Name`}
+              style={styles.input}
+              onChangeText={(text) => handlePlayerNameChange(text, index)}
+            />
+          ))}
 
-      <Button title="Generate Fixtures" onPress={generateFixtures} />
+          <Text>How many matches per team?</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[
+                styles.matchButton,
+                matchesPerTeam === 1 && styles.selectedButton,
+              ]}
+              onPress={() => setMatchesPerTeam(1)}
+            >
+              <Text style={styles.buttonText}>1</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.matchButton,
+                matchesPerTeam === 2 && styles.selectedButton,
+              ]}
+              onPress={() => setMatchesPerTeam(2)}
+            >
+              <Text style={styles.buttonText}>2</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.matchButton,
+                matchesPerTeam === 3 && styles.selectedButton,
+              ]}
+              onPress={() => setMatchesPerTeam(3)}
+            >
+              <Text style={styles.buttonText}>3</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Button title="Generate Fixtures" onPress={generateFixtures} />
+        </>
+      )}
 
       <FlatList
         data={fixtures}
