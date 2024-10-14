@@ -7,16 +7,17 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Button,
 } from "react-native";
 import { fixtures, Fixture } from "@/constants/DummyData"; // Import the dummy data
 import { tintColorLight } from "@/constants/Colors";
+import { useNavigation } from "expo-router";
 
 const FixtureScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
   const [homeScore, setHomeScore] = useState("");
   const [awayScore, setAwayScore] = useState("");
+  const navigation = useNavigation();
 
   const renderItem = ({ item }: { item: Fixture }) => (
     <TouchableOpacity
@@ -101,6 +102,14 @@ const FixtureScreen = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Floating Button */}
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => navigation.navigate("create")}
+      >
+        <Text style={styles.floatingButtonText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -172,6 +181,23 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 13,
     fontWeight: "bold",
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 30,
+    right: 30,
+    backgroundColor: "#3a3a3a",
+    borderRadius: 30,
+    width: 56,
+    height: 56,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+  },
+  floatingButtonText: {
+    color: tintColorLight,
+    fontSize: 30,
+    lineHeight: 36,
   },
 });
 
