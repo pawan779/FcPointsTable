@@ -1,11 +1,12 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { StyleSheet, Image, Platform, View, Text } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import PointsTableScreen from "@/components/PointsTable";
 
 export default function TabTwoScreen() {
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: "#131313", dark: "#131313" }}
+      headerBackgroundColor={{ light: "#000", dark: "#000" }}
       headerImage={
         <View style={styles.headerImage}>
           <Ionicons size={200} name="football" color={"#23f65c"} />
@@ -21,7 +22,9 @@ export default function TabTwoScreen() {
           </Text>
         </View>
       }
-    ></ParallaxScrollView>
+    >
+      <PointsTableScreen />
+    </ParallaxScrollView>
   );
 }
 

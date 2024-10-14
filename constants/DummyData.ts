@@ -1,7 +1,20 @@
+export type PointsTable = {
+  id: number;
+  name: string;
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  points: number;
+};
+
 export const pointsTable: PointsTable[] = [
   {
     id: 1,
-    name: "Team A",
+    name: "Manchester United",
     played: 10,
     won: 6,
     drawn: 2,
@@ -13,7 +26,7 @@ export const pointsTable: PointsTable[] = [
   },
   {
     id: 2,
-    name: "Team B",
+    name: "Liverpool",
     played: 10,
     won: 5,
     drawn: 3,
@@ -25,7 +38,7 @@ export const pointsTable: PointsTable[] = [
   },
   {
     id: 3,
-    name: "Team C",
+    name: "Chelsea",
     played: 10,
     won: 4,
     drawn: 4,
@@ -37,7 +50,7 @@ export const pointsTable: PointsTable[] = [
   },
   {
     id: 4,
-    name: "Team D",
+    name: "Arsenal",
     played: 10,
     won: 4,
     drawn: 2,
@@ -49,7 +62,7 @@ export const pointsTable: PointsTable[] = [
   },
   {
     id: 5,
-    name: "Team E",
+    name: "Manchester City",
     played: 10,
     won: 3,
     drawn: 4,
@@ -61,7 +74,7 @@ export const pointsTable: PointsTable[] = [
   },
   {
     id: 6,
-    name: "Team F",
+    name: "Tottenham Hotspur",
     played: 10,
     won: 3,
     drawn: 3,
@@ -73,7 +86,7 @@ export const pointsTable: PointsTable[] = [
   },
   {
     id: 7,
-    name: "Team G",
+    name: "Everton",
     played: 10,
     won: 3,
     drawn: 2,
@@ -85,7 +98,7 @@ export const pointsTable: PointsTable[] = [
   },
   {
     id: 8,
-    name: "Team H",
+    name: "Leicester City",
     played: 10,
     won: 2,
     drawn: 4,
@@ -97,7 +110,7 @@ export const pointsTable: PointsTable[] = [
   },
   {
     id: 9,
-    name: "Team I",
+    name: "West Ham United",
     played: 10,
     won: 2,
     drawn: 3,
@@ -109,7 +122,7 @@ export const pointsTable: PointsTable[] = [
   },
   {
     id: 10,
-    name: "Team J",
+    name: "Aston Villa",
     played: 10,
     won: 1,
     drawn: 5,
