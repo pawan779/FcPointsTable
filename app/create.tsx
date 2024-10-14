@@ -134,7 +134,7 @@ const FixtureGeneratorScreen = () => {
 
       {/* Block further inputs until fixture name is set */}
       {/* {fixtureName.length > 0 && ( */}
-      <View style={{ flex: 1 }}>
+      <View>
         <Text style={styles.txt}>How many players?</Text>
         <TextInput
           style={styles.input}
