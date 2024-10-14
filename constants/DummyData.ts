@@ -138,71 +138,11 @@ export type Fixture = {
   id: number;
   homeTeam: string;
   awayTeam: string;
-  date: string;
+  homeGoal: number;
+  awayGoal: number;
+  isCompleted: boolean;
+  date?: string;
 };
-
-export const fixtures: Fixture[] = [
-  {
-    id: 1,
-    homeTeam: "Manchester United",
-    awayTeam: "Chelsea",
-    date: "2024-10-15",
-  },
-  {
-    id: 2,
-    homeTeam: "Liverpool",
-    awayTeam: "Arsenal",
-    date: "2024-10-16",
-  },
-  {
-    id: 3,
-    homeTeam: "Tottenham Hotspur",
-    awayTeam: "Manchester City",
-    date: "2024-10-17",
-  },
-  {
-    id: 4,
-    homeTeam: "Everton",
-    awayTeam: "Leicester City",
-    date: "2024-10-18",
-  },
-  {
-    id: 5,
-    homeTeam: "West Ham United",
-    awayTeam: "Aston Villa",
-    date: "2024-10-19",
-  },
-  {
-    id: 6,
-    homeTeam: "Wolves",
-    awayTeam: "Brighton",
-    date: "2024-10-20",
-  },
-  {
-    id: 7,
-    homeTeam: "Crystal Palace",
-    awayTeam: "Newcastle United",
-    date: "2024-10-21",
-  },
-  {
-    id: 8,
-    homeTeam: "Leeds United",
-    awayTeam: "Southampton",
-    date: "2024-10-22",
-  },
-  {
-    id: 9,
-    homeTeam: "Brentford",
-    awayTeam: "Norwich City",
-    date: "2024-10-23",
-  },
-  {
-    id: 10,
-    homeTeam: "Fulham",
-    awayTeam: "Burnley",
-    date: "2024-10-24",
-  },
-];
 
 export type Result = {
   id: number;

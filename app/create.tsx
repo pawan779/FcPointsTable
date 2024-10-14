@@ -1,3 +1,6 @@
+import { Fixture } from "@/constants/DummyData";
+import { useFixtures } from "@/context/FixtureContext";
+import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
@@ -10,21 +13,13 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-export type Fixture = {
-  id: number;
-  homeTeam: string;
-  awayTeam: string;
-  homeGoal: number;
-  awayGoal: number;
-  isCompleted: boolean;
-};
-
 const FixtureGeneratorScreen = () => {
-  const [fixtureName, setFixtureName] = useState(""); // New state for fixture name
+  const [fixtureName, setFixtureName] = useState("");
   const [numberOfPlayers, setNumberOfPlayers] = useState(0);
   const [playerNames, setPlayerNames] = useState<string[]>([]);
   const [matchesPerTeam, setMatchesPerTeam] = useState<number | null>(null);
-  const [fixtures, setFixtures] = useState<Fixture[]>([]);
+  const { fixtures, setFixtures } = useFixtures();
+  const navigation = useNavigation();
 
   const handlePlayerNameChange = (text: string, index: number) => {
     const updatedNames = [...playerNames];
@@ -92,15 +87,6 @@ const FixtureGeneratorScreen = () => {
             awayGoal: 0,
             isCompleted: false,
           });
-          newFixtures.push({
-            id: newFixtures.length + 1,
-            homeTeam: teams[j],
-            awayTeam: teams[i],
-            homeGoal: 0,
-            awayGoal: 0,
-            isCompleted: false,
-          });
-
           const randomHomeFirst = Math.random() < 0.5;
           newFixtures.push({
             id: newFixtures.length + 1,
@@ -110,12 +96,20 @@ const FixtureGeneratorScreen = () => {
             awayGoal: 0,
             isCompleted: false,
           });
+          newFixtures.push({
+            id: newFixtures.length + 1,
+            homeTeam: teams[j],
+            awayTeam: teams[i],
+            homeGoal: 0,
+            awayGoal: 0,
+            isCompleted: false,
+          });
         }
       }
     }
 
     setFixtures(newFixtures);
-    console.log(newFixtures);
+    navigation.goBack();
   };
 
   const resetPlayer = () => {

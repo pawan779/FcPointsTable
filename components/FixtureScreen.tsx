@@ -8,9 +8,10 @@ import {
   Modal,
   TextInput,
 } from "react-native";
-import { fixtures, Fixture } from "@/constants/DummyData"; // Import the dummy data
+import { Fixture } from "@/constants/DummyData"; // Import the dummy data
 import { tintColorLight } from "@/constants/Colors";
 import { useNavigation } from "expo-router";
+import { useFixtures } from "@/context/FixtureContext";
 
 const FixtureScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -19,17 +20,27 @@ const FixtureScreen = () => {
   const [awayScore, setAwayScore] = useState("");
   const navigation = useNavigation();
 
+  const { fixtures, setFixtures } = useFixtures();
+
   const renderItem = ({ item }: { item: Fixture }) => (
     <TouchableOpacity
       style={styles.card}
+      disabled={item.isCompleted}
       onPress={() => {
         setSelectedFixture(item);
         setModalVisible(true);
       }}
     >
-      <Text style={styles.teamNames}>
-        {item.homeTeam} vs {item.awayTeam}
-      </Text>
+      {item.isCompleted ? (
+        <Text style={styles.teamNames}>
+          {item.homeTeam} {item.homeGoal} - {item.awayGoal} {item.awayTeam}
+        </Text>
+      ) : (
+        <Text style={styles.teamNames}>
+          {item.homeTeam} vs {item.awayTeam}
+        </Text>
+      )}
+
       <Text style={styles.date}>{"Match " + item.id}</Text>
     </TouchableOpacity>
   );
@@ -39,11 +50,28 @@ const FixtureScreen = () => {
     console.log(
       `Scores submitted: ${selectedFixture?.homeTeam} ${homeScore} - ${selectedFixture?.awayTeam} ${awayScore}`
     );
+
+    const index = fixtures.findIndex(
+      (fixture) => fixture.id === selectedFixture?.id
+    );
+    if (index !== -1) {
+      let updatedFixtures = [...fixtures];
+      updatedFixtures[index] = {
+        ...selectedFixture,
+        homeGoal: Number(homeScore),
+        awayGoal: Number(awayScore),
+        isCompleted: true,
+      };
+      setFixtures(updatedFixtures);
+    }
+
     setModalVisible(false);
     setHomeScore("");
     setAwayScore("");
     setSelectedFixture(null);
   };
+
+  console.log("fixture", fixtures);
 
   return (
     <View style={styles.container}>
