@@ -87,12 +87,13 @@ const PointsTableScreen = () => {
     calculatePoints();
   }, [fixtures]);
 
-  const renderItem = ({ item }: { item: any }) => (
+  const renderItem = ({ item, index }: { item: any; index: number }) => (
     <View style={styles.row}>
-      <Text style={styles.cell}>{item.played}</Text>
+      <Text style={styles.cell}>{index + 1}</Text>
       <Text numberOfLines={1} ellipsizeMode="tail" style={styles.teamCell}>
         {item.name}
       </Text>
+      <Text style={styles.cell}>{item.played}</Text>
       <Text style={styles.cell}>{item.won}</Text>
       <Text style={styles.cell}>{item.drawn}</Text>
       <Text style={styles.cell}>{item.lost}</Text>
@@ -108,8 +109,9 @@ const PointsTableScreen = () => {
     <View style={styles.container}>
       {/* Table Header */}
       <View style={styles.headerRow}>
-        <Text style={styles.headerCell}>P</Text>
+        <Text style={styles.headerCell}>#</Text>
         <Text style={styles.teamHeaderCell}>Team</Text>
+        <Text style={styles.headerCell}>P</Text>
         <Text style={styles.headerCell}>W</Text>
         <Text style={styles.headerCell}>D</Text>
         <Text style={styles.headerCell}>L</Text>
