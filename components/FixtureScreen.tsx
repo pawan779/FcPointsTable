@@ -15,6 +15,8 @@ import { useNavigation } from "expo-router";
 import { useFixtures } from "@/context/FixtureContext";
 import { ref, update } from "firebase/database";
 import { database } from "@/firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { sendPushNotification } from "@/app/functions/Notifications";
 
 const FixtureScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -140,6 +142,20 @@ const FixtureScreen = () => {
       console.error("Error updating fixture in Firebase:", error);
     }
 
+    let token = AsyncStorage.getItem("pushToken") || "";
+    let message = `The match between ${selectedFixture.homeTeam} and ${selectedFixture.awayTeam} has ended. The final score is ${homeScore} - ${awayScore}`;
+
+    let title = "";
+    // if goal score more win draw
+    if (homeScore > awayScore) {
+      title = ` ${selectedFixture.homeTeam} won the match`;
+    } else if (homeScore < awayScore) {
+      title = ` ${selectedFixture.awayTeam} won the match`;
+    } else {
+      title = " The match ended in a draw";
+    }
+
+    await sendPushNotification(token, message, title);
     // Reset state
     setModalVisible(false);
     setHomeScore("");

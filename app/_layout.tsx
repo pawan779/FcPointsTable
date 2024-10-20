@@ -1,3 +1,4 @@
+import NotificationHandler from "@/components/NotificationHandler";
 import { FixtureProvider } from "@/context/FixtureContext";
 import {
   DarkTheme,
@@ -31,6 +32,7 @@ export default function RootLayout() {
 
   return (
     <FixtureProvider>
+      <NotificationHandler />
       {/* Wrap the app with FixtureProvider */}
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
