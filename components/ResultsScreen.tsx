@@ -94,6 +94,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 10,
     borderBottomWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   teamNames: {
     fontSize: 13,
