@@ -1,17 +1,34 @@
 import { useFixtures } from "@/context/FixtureContext";
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
+import RNPickerSelect from "react-native-picker-select";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const PointsTableScreen = () => {
   const [pointsTable, setPointsTable] = useState<any[]>([]);
+  const [selectedFixture, setSelectedFixture] = useState<string | null>(null);
   const { fixtures } = useFixtures();
 
-  const calculatePoints = () => {
+  const sortedFixtures = () => {
+    const data = fixtures.sort((a, b) => {
+      // Compare dates in descending order
+      if (!a?.date || !b?.date) return 0;
+      return new Date(b?.date).getTime() - new Date(a?.date).getTime();
+    });
+    return data[0];
+  };
+
+  const calculatePoints = (selectedItem?: string) => {
     const table: any = {};
-    let fixture = fixtures[0];
+    let pointTable = [];
+    if (selectedItem) {
+      pointTable = fixtures.find((fixture) => fixture?.id === selectedItem);
+    } else {
+      pointTable = sortedFixtures();
+    }
 
     // Iterate over the fixtures and calculate points for each team
-    fixture.fixtures.forEach((fixture) => {
+    pointTable?.fixtures.forEach((fixture) => {
       if (fixture.isCompleted) {
         // Initialize teams if they don't exist in the table
         if (!table[fixture.homeTeam]) {
@@ -108,7 +125,7 @@ const PointsTableScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View>
+      {/* <View>
         {fixtures.map((fixture) => (
           <View>
             <Text key={fixture.id} style={{ color: "#fff" }}>
@@ -116,7 +133,31 @@ const PointsTableScreen = () => {
             </Text>
           </View>
         ))}
-      </View>
+      </View> */}
+
+      <RNPickerSelect
+        onValueChange={(value) => {
+          setSelectedFixture(value);
+          calculatePoints(value);
+        }}
+        items={fixtures.map((fixture) => ({
+          label: fixture.fixtureName,
+          value: fixture.id,
+        }))}
+        // value={sortedFixtures().id}
+        style={{
+          inputIOS: styles.input,
+          inputAndroid: styles.input,
+          iconContainer: {
+            top: 10,
+            right: 12,
+          },
+        }}
+        Icon={() => {
+          return <AntDesign name="caretdown" size={15} color="#e8e8e8" />;
+        }}
+      />
+
       {/* Table Header */}
       <View style={styles.headerRow}>
         <Text style={styles.headerCell}>#</Text>
@@ -186,6 +227,20 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 11,
     paddingLeft: 10,
+  },
+
+  input: {
+    color: "#fff",
+    backgroundColor: "#444",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+  },
+  selectedContainer: {
+    marginTop: 16,
+  },
+  selectedText: {
+    color: "#fff",
   },
 });
 

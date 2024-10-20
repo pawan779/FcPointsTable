@@ -115,6 +115,8 @@ const FixtureGeneratorScreen = () => {
     try {
       await set(ref(database, `fixtures/${fixtureName}`), {
         fixtureName,
+        id: Math.random().toString(36).substring(2, 9),
+        date: new Date().toISOString(),
         fixtures: newFixtures,
       });
       Alert.alert("Success", "Fixtures generated and saved!");
@@ -122,7 +124,7 @@ const FixtureGeneratorScreen = () => {
       Alert.alert("Error", "Failed to save fixtures to Firebase.");
     }
 
-    setFixtures(newFixtures);
+    // setFixtures(newFixtures);
     navigation.goBack();
   };
 
@@ -202,7 +204,10 @@ const FixtureGeneratorScreen = () => {
           </View>
         </View>
       )}
-      <TouchableOpacity style={styles.button} onPress={generateFixtures}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => generateFixtures()}
+      >
         <Text style={styles.buttonText1}>Generate Fixtures</Text>
       </TouchableOpacity>
     </View>

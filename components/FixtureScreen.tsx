@@ -13,98 +13,148 @@ import { Fixture } from "@/constants/DummyData"; // Import the dummy data
 import { tintColorLight } from "@/constants/Colors";
 import { useNavigation } from "expo-router";
 import { useFixtures } from "@/context/FixtureContext";
+import { ref, update } from "firebase/database";
+import { database } from "@/firebaseConfig";
 
 const FixtureScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
+  const [selectedTitle, setSelectedTitle] = useState("");
   const [homeScore, setHomeScore] = useState("");
   const [awayScore, setAwayScore] = useState("");
   const navigation = useNavigation();
 
   const { fixtures, setFixtures } = useFixtures();
 
-  const renderItem = ({ item }: { item: Fixture }) => (
-    <TouchableOpacity
-      style={styles.card}
-      disabled={item.isCompleted}
-      onPress={() => {
-        setSelectedFixture(item);
-        setModalVisible(true);
-      }}
-    >
-      {item.isCompleted ? (
-        <Text style={styles.teamNames}>
-          {item.homeTeam} {item.homeGoal} - {item.awayGoal} {item.awayTeam}
+  const renderItem = ({ item }) => {
+    console.log("item", item);
+    return (
+      <View
+        style={{
+          backgroundColor: "#262626",
+          borderRadius: 5,
+          marginBottom: 15,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 13,
+            color: "#a8a8a8",
+            marginBottom: 10,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            fontWeight: "bold",
+          }}
+        >
+          {item.fixtureName}
         </Text>
-      ) : (
-        <Text style={styles.teamNames}>
-          {item.homeTeam} vs {item.awayTeam}
-        </Text>
-      )}
 
-      <Text style={styles.date}>{"Match " + item.id}</Text>
-    </TouchableOpacity>
-  );
-
-  const handleScoreSubmit = () => {
-    // You can handle score submission here
-    console.log(
-      `Scores submitted: ${selectedFixture?.homeTeam} ${homeScore} - ${selectedFixture?.awayTeam} ${awayScore}`
+        {item.fixtures.map((fixture: Fixture) => (
+          <ListItem key={fixture.id} item={fixture} selectedTitle={item} />
+        ))}
+      </View>
     );
+  };
 
-    const index = fixtures.findIndex(
-      (fixture) => fixture.id === selectedFixture?.id
+  const ListItem = ({
+    item,
+    selectedTitle,
+  }: {
+    item: Fixture;
+    selectedTitle: string;
+  }) => {
+    let formattedDate = "";
+    let formattedTime = "";
+    if (item?.date) {
+      formattedDate = new Date(item?.date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+
+      formattedTime = new Date(item?.date).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+    }
+    return (
+      <TouchableOpacity
+        style={styles.card}
+        disabled={item.isCompleted}
+        onPress={() => {
+          setSelectedFixture(item);
+          setSelectedTitle(selectedTitle);
+          setModalVisible(true);
+        }}
+      >
+        {item.isCompleted ? (
+          <Text style={styles.teamNames}>
+            {item.homeTeam} {item.homeGoal} - {item.awayGoal} {item.awayTeam}
+          </Text>
+        ) : (
+          <Text style={styles.teamNames}>
+            {item.homeTeam} vs {item.awayTeam}
+          </Text>
+        )}
+
+        <Text style={styles.date}>{"Match " + item.id}</Text>
+      </TouchableOpacity>
     );
-    if (index !== -1) {
-      let updatedFixtures = [...fixtures];
-      updatedFixtures[index] = {
-        ...selectedFixture,
+  };
+
+  const handleScoreSubmit = async () => {
+    console.log("Submitting score", selectedTitle);
+
+    try {
+      // Update the specific fixture in Firebase Realtime Database
+      const fixtureRef = ref(
+        database,
+        `fixtures/${selectedTitle?.fixtureName}`
+      );
+
+      // Create the updated fixture object
+
+      const index = selectedTitle.fixtures.findIndex(
+        (fixture) => fixture.id === selectedFixture.id
+      );
+      selectedTitle.fixtures[index] = {
         homeGoal: Number(homeScore),
         awayGoal: Number(awayScore),
         isCompleted: true,
-        date: new Date().toISOString(),
+        id: selectedFixture.id,
+        homeTeam: selectedFixture.homeTeam,
+        awayTeam: selectedFixture.awayTeam,
+        date: selectedFixture?.date || Date.now(),
       };
-      setFixtures(updatedFixtures);
+
+      const updatedFixture = selectedTitle;
+
+      console.log("Updating fixture", updatedFixture);
+
+      // Update only the specific fixture in the database
+      await update(fixtureRef, updatedFixture);
+
+      console.log("Fixture updated in Firebase Realtime Database");
+    } catch (error) {
+      console.error("Error updating fixture in Firebase:", error);
     }
 
+    // Reset state
     setModalVisible(false);
     setHomeScore("");
     setAwayScore("");
     setSelectedFixture(null);
   };
 
-  // Alert before navigating to create new fixture
-  const handleFloatingButtonPress = () => {
-    Alert.alert(
-      "Warning",
-      "By creating a new fixture, your old data will be deleted. Are you sure?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        {
-          text: "OK",
-          onPress: () => {
-            setFixtures([]);
-            navigation.navigate("create");
-          },
-        },
-      ]
-    );
-  };
-
-  // console.log("fixture", fixtures[0].fixtures);
-
   return (
     <View style={styles.container}>
-      {/* <FlatList
-        data={fixtures[0].fixtures}
+      <FlatList
+        data={fixtures}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
-      /> */}
+      />
 
       <Modal
         animationType="slide"
@@ -158,7 +208,7 @@ const FixtureScreen = () => {
       {/* Floating Button */}
       <TouchableOpacity
         style={styles.floatingButton}
-        onPress={handleFloatingButtonPress} // Use the alert function here
+        onPress={() => navigation.navigate("create")}
       >
         <Text style={styles.floatingButtonText}>+</Text>
       </TouchableOpacity>
@@ -170,28 +220,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#1c1c1c",
+    backgroundColor: "#000",
   },
   card: {
-    backgroundColor: "#2a2a2a",
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 3,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "#161616",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
   },
   teamNames: {
-    fontSize: 15,
+    fontSize: 13,
     color: "#fff",
-    marginBottom: 8,
+    textAlign: "center",
   },
   date: {
     fontSize: 12,
     color: "#aaa",
   },
+
   modalContainer: {
     flex: 1,
     justifyContent: "center",
