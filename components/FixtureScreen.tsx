@@ -95,16 +95,16 @@ const FixtureScreen = () => {
     );
   };
 
-  console.log("fixture", fixtures);
+  // console.log("fixture", fixtures[0].fixtures);
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={fixtures}
+      {/* <FlatList
+        data={fixtures[0].fixtures}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
-      />
+      /> */}
 
       <Modal
         animationType="slide"

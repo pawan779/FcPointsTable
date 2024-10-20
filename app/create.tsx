@@ -13,6 +13,8 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
+import { database } from "@/firebaseConfig";
+import { ref, set } from "firebase/database";
 
 const FixtureGeneratorScreen = () => {
   const [fixtureName, setFixtureName] = useState("");
@@ -28,7 +30,7 @@ const FixtureGeneratorScreen = () => {
     setPlayerNames(updatedNames);
   };
 
-  const generateFixtures = () => {
+  const generateFixtures = async () => {
     if (playerNames.length < 2) {
       Alert.alert("Error", "Please enter at least 2 players.");
       return;
@@ -109,6 +111,17 @@ const FixtureGeneratorScreen = () => {
       }
     }
 
+    // Save the fixtures to Firebase
+    try {
+      await set(ref(database, `fixtures/${fixtureName}`), {
+        fixtureName,
+        fixtures: newFixtures,
+      });
+      Alert.alert("Success", "Fixtures generated and saved!");
+    } catch (error) {
+      Alert.alert("Error", "Failed to save fixtures to Firebase.");
+    }
+
     setFixtures(newFixtures);
     navigation.goBack();
   };
@@ -124,70 +137,71 @@ const FixtureGeneratorScreen = () => {
       <Text style={styles.title}>Fixture Generator</Text>
 
       {/* Fixture Name Input */}
-      {/* <Text>Enter Fixture Name:</Text>
+      <Text>Enter Fixture Name:</Text>
       <TextInput
         style={styles.input}
         placeholder="Fixture Name"
         value={fixtureName}
         onChangeText={(text) => setFixtureName(text)}
-      /> */}
+      />
 
       {/* Block further inputs until fixture name is set */}
-      {/* {fixtureName.length > 0 && ( */}
-      <View>
-        <Text style={styles.txt}>How many players?</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          placeholderTextColor={"#555555"}
-          placeholder="Number of Players"
-          onChangeText={(text) => {
-            setNumberOfPlayers(Number(text));
-            resetPlayer();
-          }}
-        />
-
-        {Array.from({ length: numberOfPlayers }).map((_, index) => (
+      {fixtureName.length > 0 && (
+        <View>
+          <Text style={styles.txt}>How many players?</Text>
           <TextInput
-            key={index}
-            placeholder={`Player ${index + 1} Name`}
             style={styles.input}
-            onChangeText={(text) => handlePlayerNameChange(text, index)}
+            keyboardType="numeric"
             placeholderTextColor={"#555555"}
+            placeholder="Number of Players"
+            onChangeText={(text) => {
+              setNumberOfPlayers(Number(text));
+              resetPlayer();
+            }}
           />
-        ))}
 
-        <Text style={styles.txt}>How many matches per team?</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[
-              styles.matchButton,
-              matchesPerTeam === 1 && styles.selectedButton,
-            ]}
-            onPress={() => setMatchesPerTeam(1)}
-          >
-            <Text style={styles.buttonText}>1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.matchButton,
-              matchesPerTeam === 2 && styles.selectedButton,
-            ]}
-            onPress={() => setMatchesPerTeam(2)}
-          >
-            <Text style={styles.buttonText}>2</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.matchButton,
-              matchesPerTeam === 3 && styles.selectedButton,
-            ]}
-            onPress={() => setMatchesPerTeam(3)}
-          >
-            <Text style={styles.buttonText}>3</Text>
-          </TouchableOpacity>
+          {Array.from({ length: numberOfPlayers }).map((_, index) => (
+            <TextInput
+              key={index}
+              placeholder={`Player ${index + 1} Name`}
+              style={styles.input}
+              onChangeText={(text) => handlePlayerNameChange(text, index)}
+              placeholderTextColor={"#555555"}
+            />
+          ))}
+
+          <Text style={styles.txt}>How many matches per team?</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[
+                styles.matchButton,
+                matchesPerTeam === 1 && styles.selectedButton,
+              ]}
+              onPress={() => setMatchesPerTeam(1)}
+            >
+              <Text style={styles.buttonText}>1</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.matchButton,
+                matchesPerTeam === 2 && styles.selectedButton,
+              ]}
+              onPress={() => setMatchesPerTeam(2)}
+            >
+              <Text style={styles.buttonText}>2</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.matchButton,
+                matchesPerTeam === 3 && styles.selectedButton,
+              ]}
+              onPress={() => setMatchesPerTeam(3)}
+            >
+              <Text style={styles.buttonText}>3</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )}
       <TouchableOpacity style={styles.button} onPress={generateFixtures}>
         <Text style={styles.buttonText1}>Generate Fixtures</Text>
       </TouchableOpacity>

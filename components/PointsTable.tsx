@@ -6,84 +6,85 @@ const PointsTableScreen = () => {
   const [pointsTable, setPointsTable] = useState<any[]>([]);
   const { fixtures } = useFixtures();
 
-  useEffect(() => {
-    const calculatePoints = () => {
-      const table: any = {};
+  const calculatePoints = () => {
+    const table: any = {};
+    let fixture = fixtures[0];
 
-      // Iterate over the fixtures and calculate points for each team
-      fixtures.forEach((fixture) => {
-        if (fixture.isCompleted) {
-          // Initialize teams if they don't exist in the table
-          if (!table[fixture.homeTeam]) {
-            table[fixture.homeTeam] = {
-              name: fixture.homeTeam,
-              played: 0,
-              won: 0,
-              drawn: 0,
-              lost: 0,
-              goalsFor: 0,
-              goalsAgainst: 0,
-              goalDifference: 0,
-              points: 0,
-            };
-          }
-          if (!table[fixture.awayTeam]) {
-            table[fixture.awayTeam] = {
-              name: fixture.awayTeam,
-              played: 0,
-              won: 0,
-              drawn: 0,
-              lost: 0,
-              goalsFor: 0,
-              goalsAgainst: 0,
-              goalDifference: 0,
-              points: 0,
-            };
-          }
-
-          // Update played matches for both teams
-          table[fixture.homeTeam].played += 1;
-          table[fixture.awayTeam].played += 1;
-
-          // Update goals for and against
-          table[fixture.homeTeam].goalsFor += fixture.homeGoal;
-          table[fixture.homeTeam].goalsAgainst += fixture.awayGoal;
-          table[fixture.awayTeam].goalsFor += fixture.awayGoal;
-          table[fixture.awayTeam].goalsAgainst += fixture.homeGoal;
-
-          // Determine the result and update points
-          if (fixture.homeGoal > fixture.awayGoal) {
-            // Home team wins
-            table[fixture.homeTeam].won += 1;
-            table[fixture.homeTeam].points += 3;
-            table[fixture.awayTeam].lost += 1;
-          } else if (fixture.awayGoal > fixture.homeGoal) {
-            // Away team wins
-            table[fixture.awayTeam].won += 1;
-            table[fixture.awayTeam].points += 3;
-            table[fixture.homeTeam].lost += 1;
-          } else {
-            // Draw
-            table[fixture.homeTeam].drawn += 1;
-            table[fixture.awayTeam].drawn += 1;
-            table[fixture.homeTeam].points += 1;
-            table[fixture.awayTeam].points += 1;
-          }
+    // Iterate over the fixtures and calculate points for each team
+    fixture.fixtures.forEach((fixture) => {
+      if (fixture.isCompleted) {
+        // Initialize teams if they don't exist in the table
+        if (!table[fixture.homeTeam]) {
+          table[fixture.homeTeam] = {
+            name: fixture.homeTeam,
+            played: 0,
+            won: 0,
+            drawn: 0,
+            lost: 0,
+            goalsFor: 0,
+            goalsAgainst: 0,
+            goalDifference: 0,
+            points: 0,
+          };
         }
-      });
+        if (!table[fixture.awayTeam]) {
+          table[fixture.awayTeam] = {
+            name: fixture.awayTeam,
+            played: 0,
+            won: 0,
+            drawn: 0,
+            lost: 0,
+            goalsFor: 0,
+            goalsAgainst: 0,
+            goalDifference: 0,
+            points: 0,
+          };
+        }
 
-      // Calculate Goal Difference for each team
-      Object.values(table).forEach((team) => {
-        team.goalDifference = team.goalsFor - team.goalsAgainst;
-      });
+        // Update played matches for both teams
+        table[fixture.homeTeam].played += 1;
+        table[fixture.awayTeam].played += 1;
 
-      // Convert the table object to an array and sort by points in descending order
-      const sortedTable = Object.values(table).sort(
-        (a, b) => b.points - a.points || b.goalDifference - a.goalDifference
-      );
-      setPointsTable(sortedTable);
-    };
+        // Update goals for and against
+        table[fixture.homeTeam].goalsFor += fixture.homeGoal;
+        table[fixture.homeTeam].goalsAgainst += fixture.awayGoal;
+        table[fixture.awayTeam].goalsFor += fixture.awayGoal;
+        table[fixture.awayTeam].goalsAgainst += fixture.homeGoal;
 
+        // Determine the result and update points
+        if (fixture.homeGoal > fixture.awayGoal) {
+          // Home team wins
+          table[fixture.homeTeam].won += 1;
+          table[fixture.homeTeam].points += 3;
+          table[fixture.awayTeam].lost += 1;
+        } else if (fixture.awayGoal > fixture.homeGoal) {
+          // Away team wins
+          table[fixture.awayTeam].won += 1;
+          table[fixture.awayTeam].points += 3;
+          table[fixture.homeTeam].lost += 1;
+        } else {
+          // Draw
+          table[fixture.homeTeam].drawn += 1;
+          table[fixture.awayTeam].drawn += 1;
+          table[fixture.homeTeam].points += 1;
+          table[fixture.awayTeam].points += 1;
+        }
+      }
+    });
+
+    // Calculate Goal Difference for each team
+    Object.values(table).forEach((team) => {
+      team.goalDifference = team.goalsFor - team.goalsAgainst;
+    });
+
+    // Convert the table object to an array and sort by points in descending order
+    const sortedTable = Object.values(table).sort(
+      (a, b) => b.points - a.points || b.goalDifference - a.goalDifference
+    );
+    setPointsTable(sortedTable);
+  };
+
+  useEffect(() => {
     calculatePoints();
   }, [fixtures]);
 
@@ -107,6 +108,15 @@ const PointsTableScreen = () => {
 
   return (
     <View style={styles.container}>
+      <View>
+        {fixtures.map((fixture) => (
+          <View>
+            <Text key={fixture.id} style={{ color: "#fff" }}>
+              {fixture.fixtureName}
+            </Text>
+          </View>
+        ))}
+      </View>
       {/* Table Header */}
       <View style={styles.headerRow}>
         <Text style={styles.headerCell}>#</Text>

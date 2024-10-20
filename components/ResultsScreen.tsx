@@ -4,7 +4,37 @@ import { Fixture } from "@/constants/DummyData";
 import { useFixtures } from "@/context/FixtureContext";
 
 const ResultsScreen = () => {
-  const renderItem = ({ item }: { item: Fixture }) => {
+  const renderItem = ({ item }) => {
+    console.log("item", item);
+    return (
+      <View
+        style={{
+          backgroundColor: "#262626",
+          borderRadius: 5,
+          marginBottom: 15,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 13,
+            color: "#a8a8a8",
+            marginBottom: 10,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            fontWeight: "bold",
+          }}
+        >
+          {item.fixtureName}
+        </Text>
+
+        {item.fixtures.map((fixture: Fixture) => (
+          <ListItem key={fixture.id} item={fixture} />
+        ))}
+      </View>
+    );
+  };
+
+  const ListItem = ({ item }: { item: Fixture }) => {
     let formattedDate = "";
     let formattedTime = "";
     if (item?.date) {
@@ -44,9 +74,9 @@ const ResultsScreen = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={sortedFixtures}
+        data={fixtures}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        // keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -57,23 +87,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#1c1c1c",
+    backgroundColor: "#000",
   },
   card: {
-    backgroundColor: "#2a2a2a",
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 3,
+    backgroundColor: "#161616",
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    borderBottomWidth: 1,
   },
   teamNames: {
-    fontSize: 15,
+    fontSize: 13,
     color: "#fff",
-    marginBottom: 8,
+    textAlign: "center",
   },
   date: {
     fontSize: 12,
